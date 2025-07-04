@@ -1,6 +1,7 @@
 import { Negara, Pelabuhan, Barang } from "@/types/api";
 
-const API_BASE_URL = 'http://202.157.176.100:3001';
+// Tidak perlu pakai BASE_URL langsung ke IP karena akan melalui API route Next.js
+const API_BASE_URL = '/api';
 
 // Fungsi untuk mengambil data negara
 export const fetchNegaras = async (): Promise<Negara[]> => {
@@ -20,8 +21,7 @@ export const fetchNegaras = async (): Promise<Negara[]> => {
 // Fungsi untuk mengambil data pelabuhan berdasarkan negara
 export const fetchPelabuhans = async (idNegara: string): Promise<Pelabuhan[]> => {
   try {
-    const filter = JSON.stringify({ where: { id_negara: idNegara } });
-    const response = await fetch(`${API_BASE_URL}/pelabuhans?filter=${encodeURIComponent(filter)}`);
+    const response = await fetch(`${API_BASE_URL}/pelabuhans?idNegara=${idNegara}`);
     if (!response.ok) {
       throw new Error('Failed to fetch pelabuhans');
     }
@@ -36,8 +36,7 @@ export const fetchPelabuhans = async (idNegara: string): Promise<Pelabuhan[]> =>
 // Fungsi untuk mengambil data barang berdasarkan pelabuhan
 export const fetchBarangs = async (idPelabuhan: string): Promise<Barang[]> => {
   try {
-    const filter = JSON.stringify({ where: { id_pelabuhan: idPelabuhan } });
-    const response = await fetch(`${API_BASE_URL}/barangs?filter=${encodeURIComponent(filter)}`);
+    const response = await fetch(`${API_BASE_URL}/barangs?idPelabuhan=${idPelabuhan}`);
     if (!response.ok) {
       throw new Error('Failed to fetch barangs');
     }
@@ -48,5 +47,3 @@ export const fetchBarangs = async (idPelabuhan: string): Promise<Barang[]> => {
     throw error;
   }
 };
-
-
