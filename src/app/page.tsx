@@ -1,12 +1,13 @@
+
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
-import { ChevronDown, Globe, Ship, Package, Percent, DollarSign, Calculator, FileText } from 'lucide-react'
+import {  Globe, Ship, Package, Percent, DollarSign, Calculator, FileText } from 'lucide-react'
 import { fetchNegaras, fetchPelabuhans, fetchBarangs } from '@/services/api'
+import { Negara, Pelabuhan, Barang } from '@/types/api'
 
 export default function Home() {
   const [formData, setFormData] = useState({
@@ -19,9 +20,9 @@ export default function Home() {
   })
   
   const [barangDescription, setBarangDescription] = useState('')
-  const [negaraOptions, setNegaraOptions] = useState([])
-  const [pelabuhanOptions, setPelabuhanOptions] = useState([])
-  const [barangOptions, setBarangOptions] = useState([])
+  const [negaraOptions, setNegaraOptions] = useState<{ value: string; label: string }[]>([])
+  const [pelabuhanOptions, setPelabuhanOptions] = useState<{ value: string; label: string }[]>([])
+  const [barangOptions, setBarangOptions] = useState<{ value: string; label: string; description: string; harga: number; diskon: number }[]>([])
   const [loading, setLoading] = useState({
     negara: false,
     pelabuhan: false,
@@ -58,8 +59,8 @@ export default function Home() {
   const loadNegaras = async () => {
     setLoading(prev => ({ ...prev, negara: true }))
     try {
-      const data = await fetchNegaras()
-      const options = data.map((item: any) => ({
+      const data: Negara[] = await fetchNegaras()
+      const options = data.map(item => ({
         value: item.id_negara.toString(),
         label: `${item.kode_negara} - ${item.nama_negara}`
       }))
@@ -74,8 +75,8 @@ export default function Home() {
   const loadPelabuhans = async (idNegara: string) => {
     setLoading(prev => ({ ...prev, pelabuhan: true }))
     try {
-      const data = await fetchPelabuhans(idNegara)
-      const options = data.map((item: any) => ({
+      const data: Pelabuhan[] = await fetchPelabuhans(idNegara)
+      const options = data.map(item => ({
         value: item.id_pelabuhan.toString(),
         label: item.nama_pelabuhan
       }))
@@ -90,8 +91,8 @@ export default function Home() {
   const loadBarangs = async (idPelabuhan: string) => {
     setLoading(prev => ({ ...prev, barang: true }))
     try {
-      const data = await fetchBarangs(idPelabuhan)
-      const options = data.map((item: any) => ({
+      const data: Barang[] = await fetchBarangs(idPelabuhan)
+      const options = data.map(item => ({
         value: item.id_barang.toString(),
         label: `${item.id_barang} - ${item.nama_barang}`,
         description: item.description || '',
@@ -147,7 +148,7 @@ export default function Home() {
 
   // Handle barang selection
   const handleBarangChange = (value: string) => {
-    const selectedBarang = barangOptions.find((item: any) => item.value === value)
+    const selectedBarang = barangOptions.find(item => item.value === value)
     if (selectedBarang) {
       setFormData(prev => ({ 
         ...prev, 
@@ -201,7 +202,7 @@ export default function Home() {
                       <SelectValue placeholder={loading.negara ? "Loading..." : "Pilih Negara"} />
                     </SelectTrigger>
                     <SelectContent className="rounded-xl border-0 shadow-xl">
-                      {negaraOptions.map((option: any) => (
+                      {negaraOptions.map(option => (
                         <SelectItem key={option.value} value={option.value} className="rounded-lg">
                           {option.label}
                         </SelectItem>
@@ -226,7 +227,7 @@ export default function Home() {
                       <SelectValue placeholder={loading.pelabuhan ? "Loading..." : !formData.negara ? "Pilih Negara dulu" : "Pilih Pelabuhan"} />
                     </SelectTrigger>
                     <SelectContent className="rounded-xl border-0 shadow-xl">
-                      {pelabuhanOptions.map((option: any) => (
+                      {pelabuhanOptions.map(option => (
                         <SelectItem key={option.value} value={option.value} className="rounded-lg">
                           {option.label}
                         </SelectItem>
@@ -252,7 +253,7 @@ export default function Home() {
                         <SelectValue placeholder={loading.barang ? "Loading..." : !formData.pelabuhan ? "Pilih Pelabuhan dulu" : "Pilih Barang"} />
                       </SelectTrigger>
                       <SelectContent className="rounded-xl border-0 shadow-xl">
-                        {barangOptions.map((option: any) => (
+                        {barangOptions.map(option => (
                           <SelectItem key={option.value} value={option.value} className="rounded-lg">
                             {option.label}
                           </SelectItem>
@@ -344,4 +345,6 @@ export default function Home() {
     </div>
   )
 }
+
+
 
