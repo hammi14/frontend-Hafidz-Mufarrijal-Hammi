@@ -25,7 +25,6 @@ Aplikasi form test untuk frontend developer yang dibuat menggunakan Next.js dan 
 
 Pastikan Anda sudah menginstall:
 - Node.js (versi 18 atau lebih baru)
-- pnpm (package manager)
 
 ### Langkah-langkah
 
